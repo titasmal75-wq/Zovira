@@ -1,0 +1,86 @@
+<%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+
+    <main class="page-main">
+      <div class="section-headline" style="margin-bottom: 32px;">
+        <div>
+          <h2>Your Saved Favourites</h2>
+          <p class="section-subtext">Properties you have shortlisted for your upcoming adventures</p>
+        </div>
+        <div class="results-count">
+          <span><%= favouriteHomes.length %> <%= favouriteHomes.length === 1 ? 'saved home' : 'saved homes' %></span>
+        </div>
+      </div>
+
+      <% if (favouriteHomes.length > 0) { %>
+        <div class="card-grid">
+          <% favouriteHomes.forEach(home => { %>
+            <% if (home) { %>
+              <div class="card">
+                <div class="card-image-wrapper">
+                  <img 
+                    src="<%= getPhotoUrl(home.photo) %>" 
+                    alt="<%= home.houseName || 'Property image' %>"
+                    loading="lazy"
+                  >
+                  <div class="card-image-overlay"></div>
+                  
+                  <div class="card-glass-rating">
+                    <i class="fas fa-star" style="color: #FFB703;"></i>
+                    <span><%= home.rating ? home.rating : '4.8' %></span>
+                  </div>
+
+                  <form action="/favourites/delete/<%= home._id %>" method="POST" class="card-glass-fav-form">
+                    <button type="submit" class="card-glass-fav-btn active" title="Remove from Favourites" aria-label="Remove from favourites">
+                      <i class="fas fa-heart" style="color: #FF385C;"></i>
+                    </button>
+                  </form>
+                </div>
+
+                <div class="card-body">
+                  <h3 class="card-title"><%= home.houseName %></h3>
+                  <p class="card-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <%= home.location %>
+                  </p>
+
+                  <div class="card-footer">
+                    <div class="card-price">
+                      <span class="price-currency">₹</span>
+                      <span class="price-amount"><%= Number(home.price).toLocaleString('en-IN') %></span>
+                      <span class="price-period">/ night</span>
+                    </div>
+
+                    <div style="display:flex; gap:8px;">
+                      <a href="/homes/<%= home._id %>" class="btn btn-outline-primary btn-sm">
+                        Details
+                      </a>
+                      <form action="/favourites/delete/<%= home._id %>" method="POST" style="margin:0;">
+                        <button type="submit" class="btn btn-ghost btn-sm" title="Remove">
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% } %>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <i class="fas fa-heart-crack"></i>
+          </div>
+          <h2>No Favourites Yet</h2>
+          <p>Click the heart icon on any listing to save your dream stays here.</p>
+          <a href="/homes" class="btn btn-primary" style="margin-top: 18px;">
+            <i class="fas fa-compass"></i> Explore Stays
+          </a>
+        </div>
+      <% } %>
+    </main>
+  </body>
+</html>

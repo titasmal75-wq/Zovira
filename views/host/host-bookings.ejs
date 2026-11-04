@@ -1,0 +1,88 @@
+<%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+
+    <main class="page-main">
+      <div class="section-headline" style="margin-bottom: 32px;">
+        <div>
+          <h2>Guest Bookings</h2>
+          <p class="section-subtext">All reservations made at your properties</p>
+        </div>
+      </div>
+
+      <% if (!bookings || bookings.length === 0) { %>
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <h2>No Bookings Yet</h2>
+          <p>When guests book one of your homes, their reservations will appear here.</p>
+        </div>
+      <% } else { %>
+        <div class="host-bookings-table-wrap">
+          <table class="host-bookings-table">
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>Guest</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Nights</th>
+                <th>Guests</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% bookings.forEach(function(booking) { %>
+                <% if (booking.home && booking.guest) { %>
+                <tr>
+                  <td class="host-booking-home">
+                    <img src="<%= getPhotoUrl(booking.home.photo) %>" alt="" class="host-booking-thumb">
+                    <span><%= booking.home.houseName %></span>
+                  </td>
+                  <td>
+                    <% if (booking.guest) { %>
+                      <span class="guest-name"><%= booking.guest.firstName || '' %> <%= booking.guest.lastName || '' %></span><br>
+                      <small class="text-muted"><%= booking.guest.email || '' %></small>
+                    <% } else { %>
+                      <span class="text-muted">—</span>
+                    <% } %>
+                  </td>
+                  <td><%= new Date(booking.checkIn).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) %></td>
+                  <td><%= new Date(booking.checkOut).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) %></td>
+                  <td><%= Math.ceil((new Date(booking.checkOut) - new Date(booking.checkIn)) / (1000 * 60 * 60 * 24)) %></td>
+                  <td><%= booking.guests %></td>
+                  <td class="booking-price-value">₹<%= booking.totalPrice.toLocaleString('en-IN') %></td>
+                  <td>
+                    <span class="booking-status-badge badge-<%= booking.status %>">
+                      <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+                    </span>
+                  </td>
+                  <td>
+                    <% if (booking.status !== 'cancelled') { %>
+                      <form action="/host/bookings/update-status" method="POST">
+                        <input type="hidden" name="bookingId" value="<%= booking._id %>">
+                        <input type="hidden" name="status" value="cancelled">
+                        <button type="submit" class="btn btn-danger-outline btn-sm"
+                          onclick="return confirm('Cancel this booking?')">
+                          <i class="fas fa-times"></i> Cancel
+                        </button>
+                      </form>
+                    <% } else { %>
+                      <span class="text-muted" style="font-size:0.85rem;">—</span>
+                    <% } %>
+                  </td>
+                </tr>
+                <% } %>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </main>
+  </body>
+</html>
+

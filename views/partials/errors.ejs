@@ -1,0 +1,10 @@
+<% if (errors.length > 0) {%>
+  <div class="alert alert-error">
+    <strong><i class="fas fa-exclamation-circle"></i> Please fix the following:</strong>
+    <ul>
+      <% errors.forEach(error => { %>
+        <li><%= error %></li>
+      <% }) %>
+    </ul>
+  </div>
+<% } %>

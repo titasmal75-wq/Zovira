@@ -1,0 +1,108 @@
+<%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+
+    <main class="page-main">
+      <div class="section-headline" style="margin-bottom: 32px;">
+        <div>
+          <h2>Your Bookings</h2>
+          <p class="section-subtext">Manage your upcoming and past reservations</p>
+        </div>
+      </div>
+
+      <% if (locals.flashSuccess) { %>
+        <div class="booking-alert booking-alert-success" style="max-width:700px; margin: 0 auto 24px;">
+          <i class="fas fa-check-circle"></i> <%= flashSuccess %>
+        </div>
+      <% } %>
+
+      <% if (locals.flashError) { %>
+        <div class="booking-alert booking-alert-error" style="max-width:700px; margin: 0 auto 24px;">
+          <i class="fas fa-exclamation-circle"></i> <%= flashError %>
+        </div>
+      <% } %>
+
+      <% if (!bookings || bookings.length === 0) { %>
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <i class="fas fa-calendar-check"></i>
+          </div>
+          <h2>No Active Reservations</h2>
+          <p>When you book a stay, your itinerary and check-in instructions will appear here.</p>
+          <a href="/homes" class="btn btn-primary" style="margin-top: 18px;">
+            <i class="fas fa-compass"></i> Find a Place to Stay
+          </a>
+        </div>
+      <% } else { %>
+        <div class="bookings-grid">
+          <% bookings.forEach(function(booking) { %>
+            <% if (booking.home) { %>
+            <div class="booking-item-card">
+              <div class="booking-item-img">
+                <img src="<%= getPhotoUrl(booking.home.photo) %>" alt="<%= booking.home.houseName %>">
+                <span class="booking-status-badge badge-<%= booking.status %>">
+                  <% if (booking.status === 'confirmed') { %>
+                    <i class="fas fa-check-circle"></i>
+                  <% } else if (booking.status === 'cancelled') { %>
+                    <i class="fas fa-times-circle"></i>
+                  <% } else { %>
+                    <i class="fas fa-clock"></i>
+                  <% } %>
+                  <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+                </span>
+              </div>
+
+              <div class="booking-item-body">
+                <h3 class="booking-home-name"><%= booking.home.houseName %></h3>
+                <p class="booking-location">
+                  <i class="fas fa-map-marker-alt"></i> <%= booking.home.location %>
+                </p>
+
+                <div class="booking-dates">
+                  <div class="booking-date-chip">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>
+                      <small>Check-in</small>
+                      <%= new Date(booking.checkIn).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) %>
+                    </span>
+                  </div>
+                  <i class="fas fa-arrow-right booking-arrow"></i>
+                  <div class="booking-date-chip">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>
+                      <small>Check-out</small>
+                      <%= new Date(booking.checkOut).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) %>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="booking-meta">
+                  <span><i class="fas fa-users"></i> <%= booking.guests %> guest<%= booking.guests > 1 ? 's' : '' %></span>
+                  <span><i class="fas fa-moon"></i>
+                    <%= Math.ceil((new Date(booking.checkOut) - new Date(booking.checkIn)) / (1000 * 60 * 60 * 24)) %> night(s)
+                  </span>
+                </div>
+
+                <div class="booking-price-row">
+                  <span class="booking-price-label">Total Paid</span>
+                  <span class="booking-price-value">₹<%= booking.totalPrice.toLocaleString('en-IN') %></span>
+                </div>
+
+                <% if (booking.status !== 'cancelled') { %>
+                  <form action="/bookings/cancel/<%= booking._id %>" method="POST" style="margin-top:12px;"
+                    onsubmit="return confirm('Are you sure you want to cancel this booking?')">
+                    <button type="submit" class="btn btn-danger-outline btn-sm">
+                      <i class="fas fa-times"></i> Cancel Booking
+                    </button>
+                  </form>
+                <% } %>
+              </div>
+            </div>
+            <% } %>
+          <% }); %>
+        </div>
+      <% } %>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+
+    <main class="page-main">
+      <div class="section-headline" style="margin-bottom: 32px;">
+        <div>
+          <h2>All Available Stays</h2>
+          <p class="section-subtext">Browse our complete collection of handpicked residences</p>
+        </div>
+        <div class="results-count">
+          <span><%= registeredHomes.length %> <%= registeredHomes.length === 1 ? 'home' : 'homes' %></span>
+        </div>
+      </div>
+
+      <% if (registeredHomes.length > 0) { %>
+        <div class="card-grid">
+          <% registeredHomes.forEach(home => { %>
+            <div class="card">
+              <div class="card-image-wrapper">
+                <img 
+                  src="<%= getPhotoUrl(home.photo) %>" 
+                  alt="<%= home.houseName || 'Property image' %>"
+                  loading="lazy"
+                >
+                <div class="card-image-overlay"></div>
+                
+                <div class="card-glass-rating">
+                  <i class="fas fa-star" style="color: #FFB703;"></i>
+                  <span><%= home.rating ? home.rating : '4.8' %></span>
+                </div>
+
+                <% if (isLoggedIn && user && user.userType === 'guest') { %>
+                  <form action="/favourites" method="POST" class="card-glass-fav-form">
+                    <input type="hidden" name="id" value="<%= home._id %>">
+                    <button type="submit" class="card-glass-fav-btn" title="Add to Favourites" aria-label="Add to favourites">
+                      <i class="fas fa-heart"></i>
+                    </button>
+                  </form>
+                <% } %>
+              </div>
+
+              <div class="card-body">
+                <h3 class="card-title"><%= home.houseName %></h3>
+                <p class="card-location">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <%= home.location %>
+                </p>
+
+                <div class="card-footer">
+                  <div class="card-price">
+                    <span class="price-currency">₹</span>
+                    <span class="price-amount"><%= Number(home.price).toLocaleString('en-IN') %></span>
+                    <span class="price-period">/ night</span>
+                  </div>
+
+                  <a href="/homes/<%= home._id %>" class="btn btn-outline-primary btn-sm">
+                    View Details
+                  </a>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <i class="fas fa-house-chimney"></i>
+          </div>
+          <h2>No Homes Listed</h2>
+          <p>Check back soon for amazing places to stay.</p>
+        </div>
+      <% } %>
+    </main>
+  </body>
+</html>
