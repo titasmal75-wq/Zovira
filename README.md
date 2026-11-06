@@ -1,5 +1,13 @@
 # 🏡 Zovira — Discover Stays. Experience More.
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-zovira--1.onrender.com-FF385C?style=for-the-badge&logo=render&logoColor=white)](https://zovira-1.onrender.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Express.js](https://img.shields.io/badge/Express.js-5.x-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Cloudinary](https://img.shields.io/badge/Cloudinary-Media_CDN-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)](https://cloudinary.com/)
+
+> 🌐 **Live Website:** [https://zovira-1.onrender.com/](https://zovira-1.onrender.com/)
+
 **Zovira** is a modern, full-stack accommodation booking platform inspired by contemporary hospitality marketplaces. It allows guests to discover and book comfortable stays, manage their itineraries, and share authentic reviews, while enabling hosts to manage property listings, upload high-resolution photos to the cloud, and oversee guest reservations.
 
 The platform is built with a responsive, glassmorphic dark UI and clean, robust backend architecture.
@@ -178,10 +186,12 @@ The objective of **Zovira** is to develop a production-ready, scalable accommoda
 B.Tech in Computer Science & Engineering  
 Jalpaiguri Government Engineering College  
 
+- 🌐 Live Application: [https://zovira-1.onrender.com/](https://zovira-1.onrender.com/)
 - GitHub: [@titasmal75-wq](https://github.com/titasmal75-wq)
 
 ---
 
 <p align="center">
-  <b>Zovira — Find Your Place. Make Every Journey Special.</b>
+  <b>Zovira — Find Your Place. Make Every Journey Special.</b><br>
+  <a href="https://zovira-1.onrender.com/">Visit Live Application 🚀</a>
 </p>
