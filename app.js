@@ -111,7 +111,7 @@ app.use(authRouter);
 
 app.use(errorsController.pageNotFound);
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 mongoose
   .connect(mongoUri)
