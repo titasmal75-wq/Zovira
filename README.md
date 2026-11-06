@@ -1,54 +1,66 @@
 # 🏡 Zovira — Discover Stays. Experience More.
 
-**Zovira** is a full-stack accommodation booking platform inspired by modern hospitality marketplaces. It allows users to explore available properties, discover comfortable stays, manage their listings, save favourite homes, and share reviews.
+**Zovira** is a modern, full-stack accommodation booking platform inspired by contemporary hospitality marketplaces. It allows guests to discover and book comfortable stays, manage their itineraries, and share authentic reviews, while enabling hosts to manage property listings, upload high-resolution photos to the cloud, and oversee guest reservations.
 
-The platform aims to make discovering and booking accommodations simple, convenient, and user-friendly.
+The platform is built with a responsive, glassmorphic dark UI and clean, robust backend architecture.
+
+---
 
 ## ✨ Features
 
-### 👤 User Authentication
-- User registration and login.
-- Secure password-based authentication.
-- Session-based user management.
-- Role-based access for guests and hosts.
+### 👤 User Authentication & Role Management
+- User registration and login with encrypted passwords (`bcryptjs`).
+- Session-based authentication stored persistently in MongoDB (`connect-mongodb-session`).
+- Role-based access control distinguishing between **Guests** and **Hosts**.
+- Protected routes for host dashboards and guest reservations.
 
-### 🏠 Property Management
-- Explore all available properties.
-- View detailed property information.
-- Hosts can add new properties.
-- Edit and delete property listings.
-- Upload property images.
+### 🏠 Property Management (Host Dashboard)
+- Hosts can create, view, edit, and delete their property listings.
+- Strict ownership verification — hosts can only modify their own properties.
+- Dynamic guest capacity and price per night settings.
+- Interactive property detail pages with live pricing breakdown.
 
-### ❤️ Favourite System
-- Add properties to favourites.
-- Remove properties from favourites.
-- View saved properties.
+### ☁️ Cloud Image Uploads (Cloudinary)
+- Seamless property photo uploads powered by **Cloudinary** and `multer-storage-cloudinary`.
+- Direct streaming from client to cloud storage — no local disk clutter.
+- High-resolution, CDN-backed image delivery with fallback handling.
+
+### 📅 Booking & Reservation System
+- Date pickers with validation (past date prevention, check-out after check-in).
+- Real-time stay duration and total cost calculation.
+- Guest booking history with reservation status badges (**Confirmed**, **Pending**, **Cancelled**).
+- Guest cancellation workflow with instant status updates.
+- Dedicated host bookings view to track all incoming guest reservations.
 
 ### ⭐ Review & Rating System
-- Users can submit property reviews.
-- Share feedback about their experiences.
-- Display reviews on property detail pages.
+- Verified guests can write reviews with a 1-to-5 star rating and detailed feedback.
+- Duplicate review prevention per property.
+- Automatic recalculation of the property's average guest rating upon submission or deletion.
+- Review authors can delete their own reviews.
+- Polished review cards with user initials, star badges, and timestamps.
 
-### 📅 Booking System
-- Booking management functionality.
-- Property booking workflow.
-- Guest and host-oriented booking experience.
+### ❤️ Favourites System
+- Guests can save their favourite properties for quick access later.
+- One-click bookmarking and removal.
+
+---
 
 ## 🛠️ Tech Stack
 
 | Technology | Purpose |
 |---|---|
-| HTML5 | Structure |
-| CSS3 | Styling |
-| JavaScript | Client-side functionality |
-| Node.js | Backend runtime |
-| Express.js | Server and REST routes |
-| MongoDB | Database |
-| Mongoose | Database modeling |
-| EJS | Server-side rendering |
-| Multer | Image uploads |
-| Express Session | Session management |
-| MongoDB Session Store | Persistent sessions |
+| **Node.js** | Backend JavaScript runtime |
+| **Express.js** | Web server and REST routing |
+| **MongoDB & Mongoose** | NoSQL database and schema modeling |
+| **EJS** | Dynamic server-side templating |
+| **Cloudinary** | Cloud-based media storage and CDN delivery |
+| **Multer & multer-storage-cloudinary** | Multipart form handling & cloud upload stream |
+| **Express Session & connect-mongodb-session** | Secure, persistent session store |
+| **Bcrypt.js** | Password hashing & encryption |
+| **CSS3 & Glassmorphism** | Custom dark-theme styling, CSS variables & animations |
+| **Font Awesome** | Modern iconography |
+
+---
 
 ## 📂 Project Structure
 
@@ -56,51 +68,53 @@ The platform aims to make discovering and booking accommodations simple, conveni
 Zovira/
 │
 ├── controllers/
-│   ├── authController.js
-│   ├── hostController.js
-│   └── storeController.js
+│   ├── authController.js       # Login, signup, logout
+│   ├── bookingController.js    # Create, view, cancel bookings
+│   ├── hostController.js       # Add, edit, delete host properties
+│   ├── reviewController.js     # Add & delete property reviews
+│   └── storeController.js      # Home exploration, details & favourites
 │
 ├── models/
-│   ├── home.js
-│   ├── user.js
-│   ├── favourite.js
-│   ├── booking.js
-│   └── review.js
+│   ├── booking.js              # Booking schema & status
+│   ├── favourite.js            # Favourites relationship
+│   ├── home.js                 # Property schema with virtual photo URLs
+│   ├── review.js               # Review & rating schema
+│   └── user.js                 # User schema (guest & host roles)
 │
 ├── routes/
-│   ├── authRouter.js
-│   ├── hostRouter.js
-│   └── storeRouter.js
+│   ├── authRouter.js           # Authentication endpoints
+│   ├── hostRouter.js           # Host management endpoints
+│   ├── reviewRouter.js         # Review endpoints
+│   └── storeRouter.js          # Store & booking endpoints
 │
 ├── views/
-│   ├── auth/
-│   ├── host/
-│   ├── store/
-│   └── includes/
+│   ├── auth/                   # Login & registration views
+│   ├── host/                   # Host homes & edit home views
+│   ├── partials/               # Nav, head, flash messages, errors
+│   └── store/                  # Explore, home-detail, bookings, favourites
 │
-├── public/
-│   ├── css/
-│   ├── js/
-│   └── images/
-│
-├── uploads/
+├── public/                     # Static assets (styles.css, output.css)
 ├── utils/
-├── app.js
+│   ├── cloudinary.js           # Cloudinary SDK & Multer storage configuration
+│   ├── database.js             # Database utilities
+│   └── pathUtil.js             # Root directory resolution
+│
+├── app.js                      # Application entry point & middleware setup
 ├── package.json
 └── README.md
 ```
 
-*Note: Adjust the structure above to match your actual project folders.*
+---
 
 ## ⚙️ Installation & Setup
 
 ### 1. Clone the repository
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+git clone https://github.com/titasmal75-wq/Zovira.git
 ```
 
-### 2. Navigate to the project
+### 2. Navigate to the project directory
 
 ```bash
 cd Zovira
@@ -114,12 +128,14 @@ npm install
 
 ### 4. Configure environment variables
 
-Create a `.env` file in the root directory.
+Create a `.env` file in the root directory:
 
 ```env
 PORT=3001
 MONGODB_URI=your_mongodb_connection_string
-SESSION_SECRET=your_session_secret
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 ```
 
 ### 5. Start the development server
@@ -128,37 +144,44 @@ SESSION_SECRET=your_session_secret
 npm run dev
 ```
 
-Open your browser:
+Open your browser and visit:
 
 ```text
 http://localhost:3001
 ```
 
+---
+
 ## 🔐 Environment Variables
 
-| Variable | Description |
-|---|---|
-| PORT | Application server port |
-| MONGODB_URI | MongoDB connection URL |
-| SESSION_SECRET | Secret used for session management |
+| Variable | Description | Required |
+|---|---|---|
+| `PORT` | Application server port (default: `3001`) | No |
+| `MONGODB_URI` | MongoDB Atlas / local connection string | **Yes** |
+| `CLOUDINARY_CLOUD_NAME` | Cloudinary account cloud name | **Yes** |
+| `CLOUDINARY_API_KEY` | Cloudinary API key | **Yes** |
+| `CLOUDINARY_API_SECRET` | Cloudinary API secret | **Yes** |
 
-**Important:** Never upload your `.env` file or database credentials to GitHub.
+> **Security Note:** Never commit your `.env` file or sensitive credentials to GitHub. Keep `.env` included in `.gitignore`.
+
+---
 
 ## 🎯 Project Objective
 
-The objective of Zovira is to develop a scalable, user-friendly accommodation marketplace while gaining practical experience in full-stack web development, database management, authentication, backend architecture, and real-world application development.
+The objective of **Zovira** is to develop a production-ready, scalable accommodation marketplace while applying industry-standard patterns in full-stack architecture, cloud media management, database relationships, and responsive UI design.
+
+---
 
 ## 👨‍💻 Developer
 
-**Titas Mal**
-
-B.Tech Computer Science & Engineering  
-Jalpaiguri Government Engineering College
+**Titas Mal**  
+B.Tech in Computer Science & Engineering  
+Jalpaiguri Government Engineering College  
 
 - GitHub: [@titasmal75-wq](https://github.com/titasmal75-wq)
 
 ---
 
 <p align="center">
-  **Zovira — Find Your Place. Make Every Journey Special.**
+  <b>Zovira — Find Your Place. Make Every Journey Special.</b>
 </p>
