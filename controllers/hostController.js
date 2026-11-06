@@ -11,7 +11,7 @@ const deleteLocalPhoto = (photoPath) => {
   const filename = path.basename(photoPath.replace(/\\/g, "/"));
   const fullPath = path.join(rootDir, "uploads", filename);
   fs.unlink(fullPath, (err) => {
-    if (err && err.code !== 'ENOENT') {
+    if (err && err.code !== "ENOENT") {
       console.log("Could not delete old photo file:", err.message);
     }
   });
@@ -30,7 +30,6 @@ exports.getAddHome = (req, res, next) => {
 exports.getEditHome = (req, res, next) => {
   const homeId = req.params.homeId;
   const editing = req.query.editing === "true";
-
 
   Home.findOne({ _id: homeId, host: req.user._id })
     .then((home) => {
@@ -51,7 +50,6 @@ exports.getEditHome = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-
 exports.getHostHomes = (req, res, next) => {
   Home.find({ host: req.user._id })
     .then((registeredHomes) => {
@@ -66,97 +64,80 @@ exports.getHostHomes = (req, res, next) => {
     .catch((err) => next(err));
 };
 
+exports.postAddHome = (req, res, next) => {
+  const { houseName, price, maxGuests, location, rating, description } = req.body;
 
-exports.postAddHome = async (req, res, next) => {
-  try {
-    const {
-      houseName,
-      price,
-      maxGuests,
-      location,
-      rating,
-      description
-    } = req.body;
-
-    if (!req.file) {
-      return res.status(422).send("Please upload an image.");
-    }
-
-    const home = new Home({
-      host: req.user._id,
-      houseName,
-      price,
-      maxGuests,
-      location,
-      rating,
-      photo: req.file.filename,
-      description
-    });
-
-    await home.save();
-
-    console.log("Home saved successfully:", home.photo);
-    res.redirect("/host/host-home-list");
-  } catch (err) {
-    next(err);
+  if (!req.file) {
+    return res.status(422).send("Please upload an image.");
   }
+
+  const photoUrl = req.file.path || req.file.filename;
+
+  const home = new Home({
+    host: req.user._id,
+    houseName,
+    price,
+    maxGuests: maxGuests || 20,
+    location,
+    rating,
+    photo: photoUrl,
+    description,
+  });
+
+  home
+    .save()
+    .then((savedHome) => {
+      console.log("Home saved with Cloudinary photo:", savedHome.photo);
+      res.redirect("/host/host-home-list");
+    })
+    .catch((err) => next(err));
 };
 
-exports.postEditHome = async (req, res, next) => {
-  try {
-    const {
-      id,
-      houseName,
-      price,
-      maxGuests,
-      location,
-      rating,
-      description
-    } = req.body;
+exports.postEditHome = (req, res, next) => {
+  const { id, houseName, price, maxGuests, location, rating, description } = req.body;
 
-    const home = await Home.findOne({ _id: id, host: req.user._id });
-
-    if (!home) {
-      return res.redirect("/host/host-home-list");
-    }
-
-    home.houseName = houseName;
-    home.price = price;
-    home.maxGuests = maxGuests;
-    home.location = location;
-    home.rating = rating;
-    home.description = description;
-
-    if (req.file) {
-      const oldPhoto = home.photo;
-      home.photo = req.file.filename;
-      if (oldPhoto) {
-        deleteLocalPhoto(oldPhoto);
+  Home.findOne({ _id: id, host: req.user._id })
+    .then((home) => {
+      if (!home) {
+        return res.redirect("/host/host-home-list");
       }
-    }
 
-    await home.save();
+      home.houseName = houseName;
+      home.price = price;
+      home.maxGuests = maxGuests || 20;
+      home.location = location;
+      home.rating = rating;
+      home.description = description;
 
-    console.log("Home updated successfully:", home.photo);
-    res.redirect("/host/host-home-list");
-  } catch (err) {
-    next(err);
-  }
+      if (req.file) {
+        const oldPhoto = home.photo;
+        home.photo = req.file.path || req.file.filename;
+        if (oldPhoto) {
+          deleteLocalPhoto(oldPhoto);
+        }
+      }
+
+      return home.save();
+    })
+    .then(() => {
+      res.redirect("/host/host-home-list");
+    })
+    .catch((err) => next(err));
 };
 
+exports.postDeleteHome = (req, res, next) => {
+  const homeId = req.params.homeId;
+  console.log("Came to delete", homeId);
 
-exports.postDeleteHome = async (req, res, next) => {
-  try {
-    const homeId = req.params.homeId;
-    console.log("Came to delete", homeId);
-
-    const home = await Home.findOneAndDelete({ _id: homeId, host: req.user._id });
-    if (home && home.photo) {
-      deleteLocalPhoto(home.photo);
-    }
-    res.redirect("/host/host-home-list");
-  } catch (error) {
-    console.log("Error while deleting", error);
-    next(error);
-  }
+  Home.findOneAndDelete({ _id: homeId, host: req.user._id })
+    .then((home) => {
+      if (home && home.photo) {
+        deleteLocalPhoto(home.photo);
+      }
+      res.redirect("/host/host-home-list");
+    })
+    .catch((error) => {
+      console.log("Error while deleting", error);
+      next(error);
+    });
 };
