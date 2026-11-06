@@ -28,6 +28,11 @@ const store = new MongoDBStore({
   collection: "sessions",
 });
 
+// Health check / Keep-alive route
+app.get("/ping", (req, res) => {
+  res.status(200).send("pong");
+});
+
 app.set("view engine", "ejs");
 app.set("views", path.join(rootDir, "views"));
 
